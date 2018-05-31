@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+html(lang="fr-FR")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+
+        block css
+            link(rel="stylesheet", href="/dist/css/bootstrap.min.css")
+
+        title= title ? title : "Node.js avec Express.js"
+    body
+        // Commentaire client
+        //- Commentaire serveur
+        <!-- Commentaire client -->
+
+        block menu
+            include _navbar
+
+        block content
+
+        block footer
+            footer
+                p Ici c'est mon footer
+
+        script(src="/dist/jquery.min.js")
+        script(src="/dist/js/bootstrap.bundle.min.js")
