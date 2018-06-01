@@ -1,10 +1,12 @@
+// On importe les modules dont on a besoin (module tiers)
 let createError = require('http-errors');
 let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
+let mongoose = require('mongoose');
 
-// On importe les différents routeurs
+// On importe les différents routeurs (les modules à nous (pour le routage))
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let productCreationRouter = require('./routes/product-creation');
@@ -26,11 +28,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dist', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use('/dist', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
+// Connexion à MongoDB
+mongoose.connect('mongodb://localhost/food');
+let database = mongoose.connection;
+database.on('error', (err) => {
+  console.log('Erreur lors de la connexion à MongoDB'),
+  console.log(err);
+})
+database.on('open', () => console.log('Connexion à MongoDB : ok '));
+
 // Système de routage
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/produit', productCreationRouter);
 
+/**
+ * Routes définies à la main
+ * ##todo : Exporter les 3 routes dans un fichier séparé
+ */
 // Création d'une page de contact
 app.get('/contact', (req, res) => {
   res.send('<h1>Page contact</h1>');
@@ -46,12 +61,12 @@ app.get(/^[/](ba)+r+$/, (req, res) => {
   res.send('URL catched !');
 });
 
-// catch 404 and forward to error handler
+// Au cas où la route demandée n'existe pas => Gestion de l'erreur 404 : Not Found
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Middleware d'erreurs : executé quand il y a une erreur
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
